@@ -16,16 +16,48 @@ Flask-Boost
 
 Flask application generator for boosting your development.
 
+Features
+--------
+
+* **Well Defined Project Structure**
+
+  * Use factory pattern to generate Flask app.
+  * Use Blueprints to organize controllers.
+  * Split controllers, models, forms, utilities, assets, Jinja2 pages, Jinja2 macros into different directories.
+  * Organize Jinja2 page assets (HTML, JavaScript, CSS) to the same directory.
+  * Organize Jinja2 macro assets (HTML, JavaScript, CSS) to the same directory.
+
+* **Batteries Included**
+
+  * Use Flask-SQLAlchemy and Flask-Migrate as database tools.
+  * Use Flask-WTF to validate forms.
+  * Use Flask-Script to help writing scripts.
+  * Use permission_ to define permissions.
+  * Use Bootstrap as frontend framework.
+  * Use Bower to manage frontend packages.
+  * Use Gulp and FIS_ to compile static assets.
+  * Use Gunicorn to run Flask app and Supervisor to manage Gunicorn processes.
+  * Use Fabric as deployment tool.
+  * Use Sentry to log exceptions.
+  * Use Nginx to serve static files.
+
+* **Scaffold Commands**
+
+  * Generate project files: ``boost new <project>``
+  * Generate controller files: ``boost new controller <controller>``
+  * Generate action files: ``boost new action <controller> <action> [-t]``
+  * Generate form files: ``boost new form <form>``
+  * Generate model files: ``boost new model <model>``
+  * Generate macro files: ``boost new macro <category> <macro>`` or ``boost new macro <macro>``
+
+.. _permission: https://github.com/hustlzp/permission
+
 Installation
 ------------
 
 ::
 
     pip install flask-boost
-
-**ATTENTION**: Breaking changes have been made in 0.6.x, use the command below if you want to install the 0.5.x version::
-
-    pip install flask-boost==0.5.6
 
 Development Guide
 -----------------
@@ -39,16 +71,20 @@ Init project
 
 Setup backend requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``cd`` to project root path, run:
  
 ::
 
+    cd <your_project_dir>
     virtualenv venv
     . venv/bin/activate (venv\Scripts\activate in Windows)
     pip install -r requirements.txt
 
-**Note**: if you failed in ``pip install -r requirements.txt`` in Windows, try to install package binaries directly.
+**Note**: if you failed in ``pip install -r requirements.txt`` in Windows, try to install package binaries directly:
+
+* pycrpyto: try to follow this article compiling-pycrypto-on-win7-64_, or get the complied pycrypyto library directly: archive_pycrpyto_library_.
+
+.. _compiling-pycrypto-on-win7-64: https://yorickdowne.wordpress.com/2010/12/22/compiling-pycrypto-on-win7-64/
+.. _archive_pycrpyto_library: http://archive.warshaft.com/pycrypto-2.3.1.win7x64-py2.7x64.7z
 
 Init database
 ~~~~~~~~~~~~~
@@ -76,7 +112,7 @@ Install Node.js first and then install Bower_, FIS_ and Gulp_ globally::
     npm install -g bower
     npm install -g fis
     npm install -g fis-postpackager-simple
-    npm install gulp
+    npm install -g gulp
 
 Install local packages::
 
@@ -121,14 +157,11 @@ PyCharm_ is the recommended IDE for Flask-Boost.
 
 Recommended preferences:
 
-In ``Preferences -> Project -> Project Interpreter``, set ``venv`` as project interpreter.
+* In ``Preferences -> Project -> Project Interpreter``, set ``venv`` as project interpreter.
+* In ``Preferences -> Project -> Project Structure``, set ``application/pages`` and ``application/macros`` as template folders, set ``application`` and ``application/static/css`` as resource folders.
+* In ``Language & Frameworks -> JavaScript -> Bower``, set ``bower.json`` as bower.json.
 
-In ``Preferences -> Project -> Project Structure``, set ``application/pages`` and ``application/macros`` as template folders,
-set ``application`` and ``application/static/css`` as resource folders.
-
-In ``Language & Frameworks -> JavaScript -> Bower``, set ``bower.json`` as bower.json.
-
-Recommended plugins:
+Recommended PyCharm plugins:
 
 * .ignore
 * Markdown
@@ -142,11 +175,7 @@ First Production Deploy
 Config server
 ~~~~~~~~~~~~~
 
-Install virtualenv, git, supervisor, nginx and g++ on your server.
-
-**Note**: Flask-Boost uses Pillow to process images, so you may install some external libraries needed by `Pillow`. Please follow the Pillow official doc_.
-
-.. _doc: http://pillow.readthedocs.org/en/latest/installation.html
+Install mysql-server, python-virtualenv, git, supervisor, nginx, g++, python-dev, libmysqlclient-dev, libxml2-dev, libxslt-dev on your server.
 
 Install requirements
 ~~~~~~~~~~~~~~~~~~~~
@@ -154,7 +183,7 @@ Install requirements
 ::
 
     git clone **.git
-    cd proj
+    cd <your_project_dir>
     virtualenv venv
     . venv/bin/activate
     pip install -r requirements.txt
@@ -162,7 +191,7 @@ Install requirements
 Config app
 ~~~~~~~~~~
 
-Update configs in ``config/production.py`` as needed and transfer it to server.
+Save ``config/production_sample.py`` as ``config/production.py``, update configs in ``config/production.py`` as needed and transfer it to server.
 
 **Note**: remember to update ``SECRET_KEY`` in ``config/production.py``! You can generate random secret key as follows::
 
@@ -222,14 +251,6 @@ Start app
     service nginx restart
     service supervisor restart
 
-for CentOS 7:
-
-::
-
-    systemctl start nginx.service
-    systemctl start supervisord.service
-
-
 Daily Production Deploy
 -----------------------
 
@@ -239,26 +260,11 @@ Commit your codes and run::
 
     git push && fab deploy
 
+P.S. If you wanna to deploy flask with Apache2, see this_ post.
+
+.. _this: https://www.digitalocean.com/community/tutorials/how-to-use-apache-http-server-as-reverse-proxy-using-mod_proxy-extension
+
 License
 -------
 
-The MIT License (MIT)
-
-Copyright (c) 2015 hustlzp
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+MIT
